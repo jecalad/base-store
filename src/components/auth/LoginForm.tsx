@@ -7,6 +7,7 @@ import { LoginSchema } from "@/schemas/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import {
   Form,
   FormField,
@@ -27,6 +28,7 @@ export function LoginForm() {
     },
   });
 
+  const router = useRouter();
   const { setAccessToken } = useAuth();
 
   const onSubmit = async (data: FormData) => {
@@ -48,6 +50,7 @@ export function LoginForm() {
       const result = await res.json();
       setAccessToken(result.accessToken);
       console.log("✅ Login exitoso");
+      router.push("/dashboard");
     } catch (error) {
       console.error("❌ Error de red:", error);
     }
