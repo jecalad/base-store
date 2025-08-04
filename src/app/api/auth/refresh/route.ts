@@ -13,7 +13,7 @@ export async function POST() {
   console.log("🔄 Intentando refrescar token");
 
   if (!refreshToken) {
-    return NextResponse.json({ error: "No refresh token" }, { status: 401 });
+    return NextResponse.json({ error: "No refresh token" }, { status: 200 });
   }
 
   try {
