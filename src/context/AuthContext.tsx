@@ -16,29 +16,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 const [loading, setLoading] = useState(true);
 
 
-  useEffect(() => {
-    const getAccessTokenFromRefresh = async () => {
-      try {
-        const res = await fetch("/api/auth/refresh", {
-          method: "POST",
-          credentials: "include", 
-        });
-  
-        if (res.ok) {
-          const data = await res.json();
-          setAccessToken(data.accessToken);
-          console.log("🔄 Token restaurado desde refresh");
-        } else {
-          console.log("🔁 No se pudo refrescar el token");
-        }
-      } catch (err) {
-        console.error("❌ Error al intentar refrescar el token", err);
+useEffect(() => {
+  const getAccessTokenFromRefresh = async () => {
+    try {
+      const res = await fetch("/api/auth/refresh", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (data.accessToken) {
+        setAccessToken(data.accessToken);
+        console.info("✅ Token restaurado desde refresh");
+      } else {
+        console.info("🔁 No se restauró el token (sin refresh cookie o token expirado)");
+        setAccessToken(null);
       }
+    } catch (err) {
+      console.error("❌ Error inesperado al refrescar el token:", err);
+      setAccessToken(null);
+    } finally {
       setLoading(false);
-    };
-  
-    getAccessTokenFromRefresh();
-  }, []);
+    }
+  };
+
+  getAccessTokenFromRefresh();
+}, []);
   
   
   return (
